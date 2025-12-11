@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { readBoard, writeBoard } from './boardFile';
-import { MessageToExtension, Board } from './types';
+import { readData, writeData } from './boardFile';
+import { MessageToExtension, FlowboardData } from './types';
 
 export class KanbanPanel {
 	public static currentPanel: KanbanPanel | undefined;
@@ -53,10 +53,10 @@ export class KanbanPanel {
 			async (message: MessageToExtension) => {
 				switch (message.type) {
 					case 'ready':
-						await this._loadBoard();
+						await this._loadData();
 						break;
-					case 'updateBoard':
-						this._debouncedSaveBoard(message.board);
+					case 'updateData':
+						this._debouncedSaveData(message.data);
 						break;
 				}
 			},
@@ -66,29 +66,29 @@ export class KanbanPanel {
 
 		// Watch for changes to .vscode/FLOWBOARD.md
 		const watcher = vscode.workspace.createFileSystemWatcher('**/.vscode/FLOWBOARD.md');
-		watcher.onDidChange(() => this._loadBoard());
-		watcher.onDidCreate(() => this._loadBoard());
-		watcher.onDidDelete(() => this._loadBoard());
+		watcher.onDidChange(() => this._loadData());
+		watcher.onDidCreate(() => this._loadData());
+		watcher.onDidDelete(() => this._loadData());
 		this._disposables.push(watcher);
 	}
 
-	private async _loadBoard() {
+	private async _loadData() {
 		const workspaceFolders = vscode.workspace.workspaceFolders;
 		if (!workspaceFolders || workspaceFolders.length === 0) {
 			this._panel.webview.postMessage({ type: 'noWorkspace' });
 			return;
 		}
 
-		const board = await readBoard();
-		this._panel.webview.postMessage({ type: 'loadBoard', board });
+		const data = await readData();
+		this._panel.webview.postMessage({ type: 'loadData', data });
 	}
 
-	private _debouncedSaveBoard(board: Board) {
+	private _debouncedSaveData(data: FlowboardData) {
 		if (this._debounceTimer) {
 			clearTimeout(this._debounceTimer);
 		}
 		this._debounceTimer = setTimeout(async () => {
-			await writeBoard(board);
+			await writeData(data);
 		}, 300);
 	}
 
