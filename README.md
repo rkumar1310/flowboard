@@ -1,12 +1,12 @@
 # Flowboard
 
-A VS Code extension that provides a per-project Kanban board for managing tasks. The board opens in the main editor area and all tasks are persisted to a `FLOWBOARD.md` file in your workspace root — plain markdown, version-controllable, and human-readable.
+A VS Code extension that provides a per-project Kanban board for managing tasks. The board opens in the main editor area and all tasks are persisted to `.vscode/FLOWBOARD.md` — plain markdown, version-controllable, and perfect for team collaboration.
 
 ## Features
 
 - **Kanban Board** - Three columns: Backlog, In Progress, Done
 - **Drag & Drop** - Move tasks between columns with smooth drag and drop
-- **Markdown Persistence** - Tasks saved to `FLOWBOARD.md` in your workspace
+- **Markdown Persistence** - Tasks saved to `.vscode/FLOWBOARD.md`
 - **Version Control Friendly** - Plain text format works great with git
 - **Theme Support** - Automatically adapts to your VS Code theme (dark, light, high-contrast)
 
@@ -20,7 +20,7 @@ A VS Code extension that provides a per-project Kanban board for managing tasks.
 
 ## File Format
 
-Tasks are stored in `FLOWBOARD.md` at your workspace root:
+Tasks are stored in `.vscode/FLOWBOARD.md`:
 
 ```markdown
 ## Backlog

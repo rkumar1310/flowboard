@@ -1,14 +1,27 @@
 import * as vscode from 'vscode';
 import { Board, Column, Task, DEFAULT_COLUMNS } from './types';
 
-const FLOWBOARD_FILENAME = 'FLOWBOARD.md';
+const FLOWBOARD_PATH = '.vscode/FLOWBOARD.md';
 
 export async function getFlowboardUri(): Promise<vscode.Uri | undefined> {
 	const workspaceFolders = vscode.workspace.workspaceFolders;
 	if (!workspaceFolders || workspaceFolders.length === 0) {
 		return undefined;
 	}
-	return vscode.Uri.joinPath(workspaceFolders[0].uri, FLOWBOARD_FILENAME);
+	return vscode.Uri.joinPath(workspaceFolders[0].uri, FLOWBOARD_PATH);
+}
+
+async function ensureVscodeFolder(): Promise<void> {
+	const workspaceFolders = vscode.workspace.workspaceFolders;
+	if (!workspaceFolders || workspaceFolders.length === 0) {
+		return;
+	}
+	const vscodeUri = vscode.Uri.joinPath(workspaceFolders[0].uri, '.vscode');
+	try {
+		await vscode.workspace.fs.stat(vscodeUri);
+	} catch {
+		await vscode.workspace.fs.createDirectory(vscodeUri);
+	}
 }
 
 export async function readBoard(): Promise<Board> {
@@ -34,6 +47,7 @@ export async function writeBoard(board: Board): Promise<void> {
 		return;
 	}
 
+	await ensureVscodeFolder();
 	const markdown = boardToMarkdown(board);
 	const content = new TextEncoder().encode(markdown);
 	await vscode.workspace.fs.writeFile(uri, content);

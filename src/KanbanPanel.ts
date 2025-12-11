@@ -64,8 +64,8 @@ export class KanbanPanel {
 			this._disposables
 		);
 
-		// Watch for changes to FLOWBOARD.md
-		const watcher = vscode.workspace.createFileSystemWatcher('**/FLOWBOARD.md');
+		// Watch for changes to .vscode/FLOWBOARD.md
+		const watcher = vscode.workspace.createFileSystemWatcher('**/.vscode/FLOWBOARD.md');
 		watcher.onDidChange(() => this._loadBoard());
 		watcher.onDidCreate(() => this._loadBoard());
 		watcher.onDidDelete(() => this._loadBoard());
