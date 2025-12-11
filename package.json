@@ -12,20 +12,55 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "flowboard",
+          "title": "Flowboard",
+          "icon": "media/flowboard.svg"
+        }
+      ]
+    },
+    "views": {
+      "flowboard": [
+        {
+          "id": "flowboard.welcome",
+          "name": "Flowboard"
+        }
+      ]
+    },
     "commands": [
       {
-        "command": "flowboard.helloWorld",
-        "title": "Hello World"
+        "command": "flowboard.openBoard",
+        "title": "Open Kanban Board",
+        "icon": "$(window)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "flowboard.openBoard",
+          "when": "view == flowboard.welcome",
+          "group": "navigation"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "flowboard.welcome",
+        "contents": "Open your project's Kanban board to manage tasks.\n[Open Board](command:flowboard.openBoard)"
       }
     ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
-    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "compile": "npm run check-types && npm run lint && node esbuild.js && npm run compile:webview",
+    "compile:webview": "cd webview && npx vite build",
     "watch": "npm-run-all -p watch:*",
     "watch:esbuild": "node esbuild.js --watch",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "watch:webview": "cd webview && npx vite build --watch",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production && npm run compile:webview",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
@@ -34,15 +69,27 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.107.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
-    "typescript-eslint": "^8.48.1",
-    "eslint": "^9.39.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@types/vscode": "^1.107.0",
+    "@vitejs/plugin-react": "^5.1.2",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
     "esbuild": "^0.27.1",
+    "eslint": "^9.39.1",
     "npm-run-all": "^4.1.5",
     "typescript": "^5.9.3",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2"
+    "typescript-eslint": "^8.48.1",
+    "vite": "^7.2.7"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@vscode-elements/elements": "^2.3.1",
+    "@vscode-elements/react-elements": "^2.3.1",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
   }
 }
